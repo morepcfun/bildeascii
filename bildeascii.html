@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Bilde til ASCII-kunst-generator</title>
+<meta name="description" content="Gjør om bildene dine til ASCII-kunst med dette nettbaserte verktøyet. Velg størrelse, velg svart-hvitt eller farger, og kopier eller eksporter som en HTML-side.">
+<meta name="author" content="Johnny Heggelund, forbedret av Alexandra">
+
+<style>
+:root {
+    --bg-color: #1a1a1a;
+    --text-color: #00ff00;
+    --accent-color: #ff00ff;
+    --border-color: #333;
+    --button-bg: #4a148c;
+    --font: 'Courier New', Courier, monospace;
+}
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 1.5em;
+    min-height: 100vh;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease;
+}
+body.dragover {
+    background-color: #2a2a2a;
+}
+h1 {
+    color: var(--accent-color);
+    text-shadow: 0 0 5px var(--accent-color);
+    margin-top: 0;
+    margin-bottom: 1em;
+}
+#controls {
+    background: #2c2c2c;
+    padding: 1.5em;
+    border-radius: 8px;
+    border: 2px dashed transparent;
+    margin-bottom: 1.5em;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2em;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    width: 90%;
+    max-width: 400px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+body.dragover #controls {
+    border-color: var(--accent-color);
+}
+label { 
+    font-size: 1.1em; 
+}
+input[type="file"], input[type="range"] { 
+    width: 100%;
+    max-width: 300px;
+}
+button {
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-family: var(--font);
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    text-shadow: 0 0 3px var(--text-color);
+}
+button:hover {
+    background-color: #6a1b9a;
+    box-shadow: 0 0 10px var(--accent-color);
+}
+#ascii-output {
+    background: #000;
+    border: 1px solid var(--border-color);
+    padding: 1em;
+    width: 100%;
+    max-width: 1400px;
+    overflow: auto;
+    white-space: pre;
+    line-height: 0.6em; /* Justert for bedre visning */
+    font-size: 8px;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    box-sizing: border-box;
+    flex-grow: 1; /* Lar output-feltet fylle tilgjengelig plass */
+}
+.toggle-switch { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+}
+.switch { 
+    position: relative; 
+    display: inline-block; 
+    width: 60px; 
+    height: 34px; 
+}
+.switch input { 
+    opacity: 0; 
+    width: 0; 
+    height: 0; 
+}
+.slider { 
+    position: absolute; 
+    cursor: pointer; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background-color: #555; 
+    transition: .4s; 
+    border-radius: 34px; 
+}
+.slider:before { 
+    position: absolute; 
+    content: ""; 
+    height: 26px; width: 26px; 
+    left: 4px; bottom: 4px; 
+    background-color: white; 
+    transition: .4s; 
+    border-radius: 50%; 
+}
+input:checked + .slider { background-color: var(--accent-color); }
+input:checked + .slider:before { transform: translateX(26px); }
+</style>
+</head>
+<body>
+<h1>✨ Bilde til ASCII-kunst ✨</h1>
+<div id="controls">
+<label for="image-upload">Last opp et bilde (eller dra og slipp):</label>
+<input type="file" id="image-upload" accept="image/*">
+<label for="width-slider">ASCII-bredde: <span id="width-value">150</span></label>
+<input type="range" id="width-slider" min="50" max="500" value="150">
+<div class="toggle-switch">
+<span>Svart-hvitt</span>
+<label class="switch">
+<input type="checkbox" id="color-toggle">
+<span class="slider"></span>
+</label>
+<span>Farger</span>
+</div>
+<button id="copy-button">Kopier ASCII-kunst</button>
+<button id="export-html-button">Eksporter som HTML</button>
+</div>
+<pre id="ascii-output">Ditt mesterverk vil dukke opp her...</pre>
+<canvas id="canvas" style="display:none;"></canvas>
+
+<script>
+const imageUpload = document.getElementById('image-upload');
+const asciiOutput = document.getElementById('ascii-output');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const widthSlider = document.getElementById('width-slider');
+const widthValue = document.getElementById('width-value');
+const copyButton = document.getElementById('copy-button');
+const exportHtmlButton = document.getElementById('export-html-button');
+const colorToggle = document.getElementById('color-toggle');
+// Reversert for intuitiv mapping: fra lyst (lav tetthet) til mørkt (høy tetthet).
+const ASCII_CHARS = [' ', '.', ':', '-', '=', '+', '*', '#', '%', '@'];
+let currentImage = null;
+const initialPlaceholderText = 'Ditt mesterverk vil dukke opp her...';
+
+// --- EVENT LISTENERS ---
+widthSlider.addEventListener('input', () => { 
+    widthValue.textContent = widthSlider.value; 
+    handleLoadedImage(); 
+});
+colorToggle.addEventListener('change', handleLoadedImage);
+imageUpload.addEventListener('change', (e) => { 
+    const file = e.target.files[0]; 
+    if (file) { handleImageFile(file); } 
+});
+
+copyButton.addEventListener('click', () => {
+    const textToCopy = asciiOutput.innerText;
+    if (textToCopy && textToCopy !== initialPlaceholderText) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const originalText = copyButton.textContent;
+            copyButton.textContent = 'Kopiert! ✨';
+            setTimeout(() => { copyButton.textContent = originalText; }, 2000);
+        }).catch(err => { 
+            console.error('Kunne ikke kopiere teksten: ', err); 
+        });
+    }
+});
+
+exportHtmlButton.addEventListener('click', () => {
+    const isColor = colorToggle.checked;
+    const asciiContent = isColor ? asciiOutput.innerHTML : asciiOutput.textContent;
+    if (!asciiContent || asciiContent === initialPlaceholderText) { 
+        alert('Vennligst generer litt ASCII-kunst først!'); 
+        return; 
+    }
+    const htmlContent = createHtmlForExport(asciiContent, isColor);
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; 
+    a.download = 'ascii-kunst.html';
+    document.body.appendChild(a); 
+    a.click();
+    document.body.removeChild(a); 
+    URL.revokeObjectURL(url);
+});
+
+// --- DRAG AND DROP LOGIC ---
+document.body.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    document.body.classList.add('dragover');
+});
+document.body.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    document.body.classList.remove('dragover');
+});
+document.body.addEventListener('drop', (e) => {
+    e.preventDefault();
+    document.body.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+        handleImageFile(file);
+    }
+});
+
+
+// --- CORE FUNCTIONS ---
+function handleImageFile(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+            currentImage = img;
+            generateAscii();
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function handleLoadedImage() {
+    if (currentImage) {
+        generateAscii();
+    }
+}
+
+function generateAscii() {
+    if (!currentImage) return;
+
+    // FORBEDRING: Juster for aspektforholdet til tegn (de er høyere enn de er brede)
+    const charAspectRatio = 0.45;
+    const maxWidth = parseInt(widthSlider.value);
+    const aspectRatio = currentImage.height / currentImage.width;
+    const newWidth = maxWidth;
+    const newHeight = Math.round(newWidth * aspectRatio * charAspectRatio);
+    
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+    ctx.drawImage(currentImage, 0, 0, newWidth, newHeight);
+    
+    const imageData = ctx.getImageData(0, 0, newWidth, newHeight).data;
+    let outputString = '';
+    const isColorMode = colorToggle.checked;
+
+    for (let i = 0; i < imageData.length; i += 4) {
+        const r = imageData[i], g = imageData[i+1], b = imageData[i+2];
+        const brightness = (0.299 * r + 0.587 * g + 0.114 * b); // Mer nøyaktig lysstyrke
+        
+        // FORBEDRING: Enklere mapping pga. reversert array
+        const charIndex = Math.floor((brightness / 255) * (ASCII_CHARS.length - 1));
+        const char = ASCII_CHARS[charIndex];
+        
+        if (isColorMode) {
+            const escapedChar = {'<': '&lt;', '>': '&gt;', '&': '&amp;'}[char] || char;
+            outputString += `<span style="color:rgb(${r},${g},${b})">${escapedChar}</span>`;
+        } else {
+            outputString += char;
+        }
+        
+        if ((i / 4 + 1) % newWidth === 0) {
+            outputString += '\n';
+        }
+    }
+
+    if (isColorMode) {
+        asciiOutput.innerHTML = outputString;
+    } else {
+        asciiOutput.textContent = outputString;
+    }
+}
+
+function createHtmlForExport(asciiContent, isColor) {
+    const content = asciiContent.replace(/`/g, '\\`');
+    const styleColor = isColor ? '' : `color: #00ff00;`;
+    return `<!DOCTYPE html><html lang="no"><head><meta charset="UTF-8"><title>ASCII-kunst-viser</title><style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background-color:#000;display:flex;justify-content:center;align-items:center;}pre{${styleColor}font-family:'Courier New',Courier,monospace;white-space:pre;line-height:.6em;letter-spacing:.05em;margin:0;}</style></head><body><pre id="ascii-art-container"></pre><script>const asciiArtContainer=document.getElementById("ascii-art-container");const isColor=${isColor};const asciiData=\`${content}\`;function resizeAscii(){if(isColor){asciiArtContainer.innerHTML=asciiData}else{asciiArtContainer.textContent=asciiData}asciiArtContainer.style.fontSize="10px";const preRect=asciiArtContainer.getBoundingClientRect();if(preRect.width===0||preRect.height===0)return;const widthScale=window.innerWidth/preRect.width;const heightScale=window.innerHeight/preRect.height;const scale=Math.min(widthScale,heightScale);const newFontSize=10*scale*.98;asciiArtContainer.style.fontSize=\`\${newFontSize}px\`}resizeAscii();window.addEventListener("resize",resizeAscii);<\/script></body></html>`;
+}
+</script>
+</body>
+</html>
