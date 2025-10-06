@@ -2,14 +2,8 @@
 <html lang="no">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#1e1e1e">
-<title>Bilde til ASCII-kunst Generator</title>
-<meta name="description" content="Med dette verktøyet kan du omdanne bildene dine til retro ASCII-kunstverk. Velg mellom klassisk svart og grønt, eller farger, og juster størrelsen.">
-<meta name="author" content="Johnny Heggelund">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://morepcfun.github.io/bildeascii/">
-<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFaUlEQVR4AexWW0xUVxRdd94dGJkB5DEyIAJS8AFiRQWLvIwfZjSNaRNT649pP9qattGmqW3606RNTJr+1KRWolX5aCNpKsRSowhCRTGAIpBoIiMDZWDEEcMgKPPq3tuMYVBTPyDthyezzrlnnf1Y55zNvajwH7eXAv63J6BQacwHKGzkb+YJKHa7/Z1tdnv/tq1bg/OE0Fa7vce+ZcvusAwRUFpaaqaFOypFOQ5FSQsvzseoKMoylVpdRfnGN2/eHCsCTNHRn9FCPCecnp5Gb28vrnV1zTk4rt/v5zS0T8Vk0On2igDa+Q5mx8fH8eeZM7jV1wen0znn4Lh/1NfjweQkp0MI2CECSI4cu3PACVOcDt+2lOHA5Yrn4qPjr2Hfr2sj1vf+UoiPT6yJ4PafKsKeo6ufcN80l0Ifpcbg4KAIoFNPfyxApoDP54fWoILeqIFGq3oCRQHct71QqRU4rt1DH+H29XsY6L0vNs7eMdy+Pka8R9bZbtgxLs9syz4cwxClhVavQiAQQLhFCAiTs8dhSt7VOAKv5xFudXpQ8lY68sqScaNtFJNeH2623cWqSitefzNd1ifGHqG7yY3U5WZU7soUztXnnR1W5i8kwJL4Cpbkx8K4QIvExdHoaR6Bg3ZszTJB/4oa1kwT+q560NPiRmJ6NIwmLdJXWuBxTaLzrAtJ5BNnNUrC2d0LCQgFqVxCITo+NVaWJkGlUVHZUCiiFZUinEanhkoF4ckUggCgUgNBmkgMPN3I5WlyNnN/9CEcXWNCa/UkYmMS0ldY4LrlRcAfpCQq5BYlILc4ESOOCUzRtfR3jyHeZkR+uRV3nA9wb2RK/Gd3LyQg0RaNvPIk8Z2a8OHib/3obnYje+1CKUK/L4jLtQNoqxtAxqo4RFt0WEEnNdBzH3/V9Mt18DVIgFldhACNRoPpqYDsaqad1qDGoqwYoQxRGthyzFhMBZZBdaEoiohIzTWDsXRNnJyILTtG6saWE4OlhfFyff7pAHyPAlCr1Qi3CAFpqalU6dP4fEMTvig//0x8WdGIQx904od32yPWD77Xjh/f7wSvh32/39WGn/ZcxVebHsfbX3IBDycCSLXZwvkRISAmJgblZWWwJi9CnCl5zmG1LkJlRQWMRuOzBTAbFRWFzIwMLM3KEryanY3VBQWC3Jwc4cJr+Xl5wvMY5nhku7AP+zPHyFySEZGc80WcABPdPT240NgIU1c7Bttaca6hAfyB8vl8OHvuHBqbmjDiduM82fAHi306Ojpk7hoZlnX28dNHx+v1ouF8Ay61twhaLjWjhz507BOGCAhRCxP9/f2w6nWoXpmFzsJl4HLxeDz4e2iI/rZDqKmpweHDh8V8eHhYxjujozIe+/kYTlSfQDAYhMvlAvul5Jrwdf0mwSdH18HhcIgtd5Q2JAIURXEywYiNjYWbdntt/AE+velEgEiLxYKEhQvpCdi+fTuqq6vl2WI2yxizYIGMVVVV2Pn2TnoZKYiPjwfX1GCvF/s21AsO7LiIhMQEseVOURSHCAgBR5hgFBcVYXl+Pj4MGHApIQWbKithMBjAtcEFlEf33traigKqi/Xr17MLiouLZX7lyhXwOttxobHwjSUlwjFfULAK6wrXio90odDBxwKGhr4jEfKqU9H71JZiw+K0NDA4kBhTxyKYY9hSUsC2RMvIc+YZM33MZrPEYd5GcWnX4Eb57gaBQyKgrqNjkv4ZSaB39ht0L9fZYL5A8W+EAoHdlC+5rq5uUgRwsqamJj8Rv9fW1eWdqq1VdHq9RqefW1BcNcXPqT19+gjn47xPBPBkJk6ePBmYa1D8ICHi91wBEVbzOHkpYN5P4N9u7x8AAAD//1sxJaIAAAAGSURBVAMAqA/1X6f+RCQAAAAASUVORK5CYII=">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Bilde til ASCII</title>
 <style>
 :root {
 --bg-color: #1a1a1a;
@@ -91,7 +85,7 @@ width: 100%;
 max-width: 1400px;
 overflow: auto;
 white-space: pre;
-line-height: 0.6em;
+line-height: 0.55em;
 font-size: 8px;
 letter-spacing: 0.05em;
 box-shadow: 0 4px 15px rgba(0,0,0,0.5);
@@ -242,11 +236,11 @@ generateAscii();
 }
 function generateAscii() {
 if (!currentImage) return;
-const charAspectRatio = 0.45;
 const maxWidth = parseInt(widthSlider.value);
 const aspectRatio = currentImage.height / currentImage.width;
 const newWidth = maxWidth;
-const newHeight = Math.round(newWidth * aspectRatio * charAspectRatio);
+// KORREKSJON: Tilbake til den originale beregningen din. Den var best.
+const newHeight = Math.round(newWidth * aspectRatio);
 canvas.width = newWidth;
 canvas.height = newHeight;
 ctx.drawImage(currentImage, 0, 0, newWidth, newHeight);
@@ -255,8 +249,7 @@ let outputString = '';
 const isColorMode = colorToggle.checked;
 for (let i = 0; i < imageData.length; i += 4) {
 const r = imageData[i], g = imageData[i+1], b = imageData[i+2];
-const brightness = (0.299 * r + 0.587 * g + 0.114 * b); // Mer nøyaktig lysstyrke
-// FORBEDRING: Enklere mapping pga. reversert array
+const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
 const charIndex = Math.floor((brightness / 255) * (ASCII_CHARS.length - 1));
 const char = ASCII_CHARS[charIndex];
 if (isColorMode) {
@@ -278,7 +271,7 @@ asciiOutput.textContent = outputString;
 function createHtmlForExport(asciiContent, isColor) {
 const content = asciiContent.replace(/`/g, '\\`');
 const styleColor = isColor ? '' : `color: #00ff00;`;
-return `<!DOCTYPE html><html lang="no"><head><meta charset="UTF-8"><title>ASCII-kunst-viser</title><style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background-color:#000;display:flex;justify-content:center;align-items:center;}pre{${styleColor}font-family:'Courier New',Courier,monospace;white-space:pre;line-height:.6em;letter-spacing:.05em;margin:0;}</style></head><body><pre id="ascii-art-container"></pre><script>const asciiArtContainer=document.getElementById("ascii-art-container");const isColor=${isColor};const asciiData=\`${content}\`;function resizeAscii(){if(isColor){asciiArtContainer.innerHTML=asciiData}else{asciiArtContainer.textContent=asciiData}asciiArtContainer.style.fontSize="10px";const preRect=asciiArtContainer.getBoundingClientRect();if(preRect.width===0||preRect.height===0)return;const widthScale=window.innerWidth/preRect.width;const heightScale=window.innerHeight/preRect.height;const scale=Math.min(widthScale,heightScale);const newFontSize=10*scale*.98;asciiArtContainer.style.fontSize=\`\${newFontSize}px\`}resizeAscii();window.addEventListener("resize",resizeAscii);<\/script></body></html>`;
+return `<!DOCTYPE html><html lang="no"><head><meta charset="UTF-8"><title>ASCII-kunst-viser</title><style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background-color:#000;display:flex;justify-content:center;align-items:center;}pre{${styleColor}font-family:'Courier New',Courier,monospace;white-space:pre;line-height:.55em;letter-spacing:.05em;margin:0;}</style></head><body><pre id="ascii-art-container"></pre><script>const asciiArtContainer=document.getElementById("ascii-art-container");const isColor=${isColor};const asciiData=\`${content}\`;function resizeAscii(){if(isColor){asciiArtContainer.innerHTML=asciiData}else{asciiArtContainer.textContent=asciiData}asciiArtContainer.style.fontSize="10px";const preRect=asciiArtContainer.getBoundingClientRect();if(preRect.width===0||preRect.height===0)return;const widthScale=window.innerWidth/preRect.width;const heightScale=window.innerHeight/preRect.height;const scale=Math.min(widthScale,heightScale);const newFontSize=10*scale*.98;asciiArtContainer.style.fontSize=\`\${newFontSize}px\`}resizeAscii();window.addEventListener("resize",resizeAscii);<\/script></body></html>`;
 }
 </script>
 </body>
